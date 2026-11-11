@@ -1,0 +1,87 @@
+[b][size=150][color=#E5A823][PROYECTO PC][/color] Golden Sun 3: Oscuro Amanecer - PC Recompilation Suite v1.0.0[/size][/b]
+[b][size=115]Soporte Widescreen 16:9 y 16:10 (Steam Deck), 4K UHD, Fix Framebuffer Display Capture, AF 16x y Texturas HD[/size][/b]
+
+[img]https://raw.githubusercontent.com/aitorcachero/GS3-Recomp/main/assets/img/goldensun_banner.bmp[/img]
+
+¡Hola a todos los compañeros de [b]ElOtroLado[/b]!
+
+Hoy os traigo un proyecto en el que he estado trabajando con mucha ilusión. Como bien sabréis los amantes de la saga de Camelot, [b]Golden Sun: Oscuro Amanecer[/b] (Nintendo DS, 2010) fue un título visualmente muy ambicioso en su época, exprimiendo al máximo el rasterizador 3D de la consola. Sin embargo, en el terreno de la emulación y preservación en PC siempre ha sido un auténtico dolor de muelas: [b]el infame problema de la alternancia de resolución (Display Capture)[/b]. 
+
+Al ejecutar el juego en emuladores tradicionales como MelonDS o DeSmuME en alta resolución (1080p o 4K), cada vez que se ejecutaba una magia de Psinergía, una invocación o ciertas transiciones, el juego utilizaba la captura de framebuffer de DS a 256x192, provocando que la pantalla parpadeara o alternara constantemente entre un frame HD nítido y un frame SD pixelado a 15-30 fps.
+
+Para solucionar esto de raíz y darle a esta joya el trato que merece (al estilo de los proyectos modernos de recompilación de consolas para PC), he desarrollado esta [b]PC Native Recompilation Suite[/b] adaptada al juego.
+
+---
+
+[b][size=130][color=#3498DB]✦ Principales Características y Mejoras Visuales[/color][/size][/b]
+
+[list]
+[*][b]Resolución Interna 3D hasta 4K Ultra HD:[/b] Motor de renderizado por hardware que permite escalar desde la resolución nativa de NDS (256x192) hasta 4K nativo (2048x1536 en 8x) con corrección de perspectiva poligonal y precisión de subpíxel.
+[*][b]Soporte Panorámico Widescreen (16:9 y 16:10 para Steam Deck):[/b] Olvídate de jugar encajonado. Cuenta con modos de pantalla adaptados para monitores ultrapanorámicos, 16:9 estándar y formato 16:10 a pantalla completa en la Steam Deck sin bandas negras laterales innecesarias.
+[*][b]Solución definitiva al Bug de Framebuffer / Display Capture:[/b] Interceptación y buffer persistente en VRAM para que las invocaciones de los Djinn y los efectos de Psinergía se rendericen en alta resolución continua, eliminando por fin el molesto parpadeo HD/SD.
+[*][b]Filtrado Anisotrópico 16x y Anti-Aliasing (MSAA 8x):[/b] Se acabó ver el suelo de las mazmorras y los caminos del mapamundi borrosos cuando la cámara baja de ángulo. Todo se ve nítido hasta el horizonte.
+[*][b]Soporte para Paquetes de Texturas HD Personalizadas:[/b] Carpeta lista ([icode]textures/goldensun3/[/icode]) con categorización para inyectar texturas reemplazadas de personajes, magias, djinn e interfaz.
+[*][b]Lanzador Moderno en Dear ImGui + SDL2 (Sin consola CMD de fondo):[/b] Interfaz gráfica limpia con el arte oficial del juego, selector de perfiles gráficos en 1 clic ([i]Ultra 4K, Equilibrado 1080p, Pixel-Art Clásico o Streamer[/i]), calibración visual del Stylus y cierre limpio sin ventanas de terminal residuales.
+[*][b]Mapeo de Mandos Plug & Play:[/b] Configurado de serie para mandos de Xbox, PlayStation y Steam Deck, con control del Stylus táctil asignado al ratón o al stick analógico derecho.
+[/list]
+
+---
+
+[b][size=130][color=#2ECC71]✦ Controles por Defecto[/color][/size][/b]
+
+[spoiler=Desplegar tabla de controles][code]
++--------------------------+-----------------------+----------------------------------+
+| Acción Nintendo DS       | Teclado               | Mando (Xbox / PS / Steam Deck)   |
++--------------------------+-----------------------+----------------------------------+
+| Cruceta (D-Pad)          | Flechas de dirección  | D-Pad / Stick Izquierdo          |
+| Botón A (Confirmar)      | X                     | A (Xbox) / Cruz (PlayStation)    |
+| Botón B (Cancelar/Correr)| Z                     | B (Xbox) / Círculo (PlayStation) |
+| Botón X (Menú Djinn)     | S                     | X (Xbox) / Cuadrado (PlayStation)|
+| Botón Y (Psinergía Campo)| A                     | Y (Xbox) / Triángulo (PS)        |
+| Gatillo L                | Q                     | LB / L1                          |
+| Gatillo R                | W                     | RB / R1                          |
+| Start                    | Enter                 | Start / Options                  |
+| Select                   | Espacio               | Back / Select / Share            |
+| Intercambiar Pantallas   | Tab                   | R3 (Click Stick Derecho)         |
+| Pantalla Completa        | F11                   | Alt + Enter                      |
+| Stylus / Pantalla Táctil | Ratón (Clic Izquierdo)| Stick Derecho                    |
+| Salir                    | Esc                   | Tecla Escape                     |
++--------------------------+-----------------------+----------------------------------+
+[/code][/spoiler]
+
+---
+
+[b][size=130][color=#E67E22]✦ Requisitos e Instalación[/color][/size][/b]
+
+[b]Requisitos:[/b]
+[list]
+[*]Windows 10 u 11 (64-bit)
+[*]Tarjeta gráfica compatible con OpenGL 3.3 o superior (NVIDIA, AMD o Intel)
+[*]Tu propia copia de seguridad del juego ([icode]Golden Sun - Dark Dawn.nds[/icode]). [i]Por motivos obvios de derechos de autor, el paquete NO incluye la ROM comercial.[/i]
+[/list]
+
+[b]Instrucciones paso a paso:[/b]
+[list=1]
+[*]Descarga el paquete listo para usar desde la sección de Releases de GitHub.
+[*]Descomprime el archivo [b]GS3-Recomp-v1.0.0-Windows-x64.zip[/b] en cualquier carpeta de tu ordenador.
+[*]Copia tu archivo ROM [icode]Golden Sun - Dark Dawn.nds[/icode] dentro de la carpeta principal (o búscalo con el botón "Examinar ROM" del lanzador).
+[*]Ejecuta [b]GoldenSun3_Recomp.exe[/b] (o haz doble clic en [icode]JUGAR.bat[/icode]).
+[*]Elige la resolución que desees (ej: 4K UHD para monitor o 1080p para portátil/Steam Deck) y pulsa en [b]INICIAR JUEGO EN PC[/b].
+[/list]
+
+---
+
+[b][size=130][color=#9B59B6]✦ Descarga y Código Fuente[/color][/size][/b]
+
+El proyecto es totalmente open-source bajo licencia MIT:
+
+[b]Descarga directa (Release v1.0.0):[/b]
+[url=https://github.com/aitorcachero/GS3-Recomp/releases/download/v1.0.0/GS3-Recomp-v1.0.0-Windows-x64.zip]Descargar GS3-Recomp-v1.0.0-Windows-x64.zip (22.7 MB)[/url]
+
+[b]Repositorio en GitHub:[/b]
+[url=https://github.com/aitorcachero/GS3-Recomp]https://github.com/aitorcachero/GS3-Recomp[/url]
+
+[b]Página de Releases con changelog:[/b]
+[url=https://github.com/aitorcachero/GS3-Recomp/releases]https://github.com/aitorcachero/GS3-Recomp/releases[/url]
+
+¡Espero que lo disfrutéis tanto como yo rejugando esta tercera entrega en glorioso 4K y pantalla ancha! Cualquier duda, sugerencia o feedback que tengáis, estaré encantado de leeros en el hilo.
