@@ -1,7 +1,7 @@
 # Golden Sun 3: Oscuro Amanecer (Dark Dawn) - PC Native Recompilation Suite
 
 [![Platform: Windows x64](https://img.shields.io/badge/Platform-Windows%20x64-blue.svg)](https://github.com/aitorcachero/GS3-Recomp)
-[![Status: Released v1.0.0](https://img.shields.io/badge/Release-v1.0.0-brightgreen.svg)](https://github.com/aitorcachero/GS3-Recomp/releases)
+[![Status: Released v1.0.1](https://img.shields.io/badge/Release-v1.0.1-brightgreen.svg)](https://github.com/aitorcachero/GS3-Recomp/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
 [![Game: Nintendo DS](https://img.shields.io/badge/ROM-Golden%20Sun%203%20(BO5P)-gold.svg)](https://github.com/aitorcachero/GS3-Recomp)
 
