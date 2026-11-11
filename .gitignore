@@ -27,3 +27,5 @@ saves/*.sav
 # Executable outputs that get packaged into releases
 # (source code and assets are tracked)
 GoldenSun3_Recomp.exe
+
+*.zip
