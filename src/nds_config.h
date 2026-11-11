@@ -55,6 +55,7 @@ struct NdsConfig {
 
     // Aspect Ratio (16:9, 16:10, 4:3)
     int aspect_ratio_mode = NDS_ASPECT_16_9;
+    int widescreen_target_screen = 0; // 0: Ambas pantallas, 1: Solo pantalla 3D inferior, 2: Solo pantalla superior
 
     // Golden Sun 3 Specific Fixes & Enhancements
     int fix_hd_framebuffer = 1;      // Solves Golden Sun 3 HD/SD frame alternation bug

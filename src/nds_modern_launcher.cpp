@@ -545,7 +545,18 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
                     "16:10 Panoramico Nativo (Steam Deck 1280x800, MacBooks)"
                 };
                 ImGui::Combo("Relacion de Aspecto 3D", &config.aspect_ratio_mode, aspect_names, 3);
-                ImGui::Checkbox("Widescreen 3D FOV Hack (Modifica matriz de proyeccion de camara)", (bool*)&config.widescreen_3d_fov);
+
+                const char* target_screen_names[] = {
+                    "Ambas Pantallas (Superior e Inferior 3D)",
+                    "Solo Pantalla 3D Inferior (Recomendado Golden Sun 3)",
+                    "Solo Pantalla Superior"
+                };
+                ImGui::Combo("Pantalla con Widescreen", &config.widescreen_target_screen, target_screen_names, 3);
+
+                ImGui::Checkbox("Widescreen 3D FOV Hor+ Hack (Modifica matriz de proyeccion en RAM)", (bool*)&config.widescreen_3d_fov);
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Inyecta el parche Action Replay en el motor 3D de Golden Sun 3 para ampliar el campo de vision horizontal sin distorsion.");
+                }
 
                 ImGui::Spacing();
                 ImGui::Separator();
@@ -639,6 +650,11 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
                 ImGui::Checkbox("Correccion de Perspectiva 3D", (bool*)&config.perspective_correction);
                 ImGui::SameLine();
                 ImGui::Checkbox("Rasterizador Subpixel (Elimina temblor)", (bool*)&config.subpixel_rasterizer);
+
+                ImGui::Checkbox("Sincronizacion Vertical (VSync 60 FPS)", (bool*)&config.vsync);
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("Sincroniza el refresco con el monitor eliminando el tearing o cortes de linea.");
+                }
 
                 // =================================================================
                 // LADO DERECHO: PREVISUALIZACIÓN Y DETALLES TÉCNICOS

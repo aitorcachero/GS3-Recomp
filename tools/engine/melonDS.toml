@@ -33,11 +33,10 @@ DirectMode = false
 Renderer = 1
 
 [3D.GL]
-ScaleFactor = 1
+ScaleFactor = 6
 CustomTextures = true
 AnisotropicFiltering = 16
 BetterPolygons = true
-Scale = 4
 
 [MP]
 AudioMode = 1
@@ -60,9 +59,10 @@ FastMemory = true
 Enable = true
 
 [Screen]
-VSync = false
+VSync = true
 UseGL = true
 
+VSyncInterval = 1
 [Instance0]
 SaveFilePath = "../../saves"
 EnableCheats = true
@@ -157,13 +157,13 @@ Enabled = true
 ShowOSD = false
 Geometry = "AdnQywADAAAAAAAIAAAAAAAACfcAAAWXAAADwAAAAcgAAASHAAACKwAAAAAABAAACgAAAAAAAAAAAAAACf8AAAWf"
 ScreenLayout = 1
-ScreenGap = 16
+ScreenGap = 24
 ScreenSwap = false
 ScreenSizing = 0
 IntegerScaling = false
 ScreenRotation = 0
-ScreenAspectBot = 0
-ScreenAspectTop = 1
+ScreenAspectBot = 2
+ScreenAspectTop = 2
 ScreenFilter = false
 
 [Instance0.Audio]

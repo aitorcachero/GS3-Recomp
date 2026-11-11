@@ -11,7 +11,7 @@ integer_scaling = 0
 
 [dual_screen]
 screen_layout = 1
-screen_gap = 16
+screen_gap = 24
 swap_screens = 0
 active_single_screen = 0
 aspect_ratio_mode = 1
@@ -21,9 +21,9 @@ fix_hd_framebuffer = 1
 custom_textures_enabled = 1
 
 [graphics_3d_2d]
-internal_resolution_scale = 4
+internal_resolution_scale = 6
 texture_filter = 0
-antialiasing_msaa = 4
+antialiasing_msaa = 16
 anisotropic_filter = 16
 perspective_correction = 1
 subpixel_rasterizer = 1

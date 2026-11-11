@@ -108,6 +108,7 @@ void NdsConfig::load_from_file(const char* filepath) {
         else if (sscanf(line, "swap_screens = %d", &v) == 1) swap_screens = v;
         else if (sscanf(line, "active_single_screen = %d", &v) == 1) active_single_screen = v;
         else if (sscanf(line, "aspect_ratio_mode = %d", &v) == 1) aspect_ratio_mode = v;
+        else if (sscanf(line, "widescreen_target_screen = %d", &v) == 1) widescreen_target_screen = v;
 
         else if (sscanf(line, "fix_hd_framebuffer = %d", &v) == 1) fix_hd_framebuffer = v;
         else if (sscanf(line, "custom_textures_enabled = %d", &v) == 1) custom_textures_enabled = v;
@@ -159,7 +160,8 @@ void NdsConfig::save_to_file(const char* filepath) const {
     fprintf(f, "screen_gap = %d\n", screen_gap);
     fprintf(f, "swap_screens = %d\n", swap_screens);
     fprintf(f, "active_single_screen = %d\n", active_single_screen);
-    fprintf(f, "aspect_ratio_mode = %d\n\n", aspect_ratio_mode);
+    fprintf(f, "aspect_ratio_mode = %d\n", aspect_ratio_mode);
+    fprintf(f, "widescreen_target_screen = %d\n\n", widescreen_target_screen);
 
     fprintf(f, "[goldensun_enhancements]\n");
     fprintf(f, "fix_hd_framebuffer = %d\n", fix_hd_framebuffer);

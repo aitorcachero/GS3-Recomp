@@ -1,7 +1,7 @@
 /* =============================================================================
  * NINTENDO DS RECOMPILATION - GOLDEN SUN 3: OSCURO AMANECER
  * Native PC Game Runner & Dual-Screen Presentation Engine
- * Solucion tecnica para Framebuffer Capture, Pantalla Ancha (16:9/16:10) y AF
+ * Solucion tecnica para Framebuffer Capture, Pantalla Ancha (16:9/16:10), AF y Cheats Hor+
  * ============================================================================= */
 
 #include "nds_game_runner.h"
@@ -9,14 +9,61 @@
 #include <cstdio>
 #include <cstring>
 #include <string>
+#include <vector>
+#include <map>
+#include <fstream>
+#include <sstream>
 
-// Sincronizar ajustes del usuario con la configuración del motor de Nintendo DS
+// Sincronizar codigos Action Replay Hor+ Widescreen en formato nativo melonDS (.mch)
+static void sync_melon_cheats(const NdsConfig& config, const std::string& rom_path) {
+    bool enable_16_9 = (config.widescreen_3d_fov && config.aspect_ratio_mode == NDS_ASPECT_16_9);
+    bool enable_16_10 = (config.widescreen_3d_fov && config.aspect_ratio_mode == NDS_ASPECT_16_10);
+
+    // Formato nativo melonDS para codigos Action Replay
+    std::string mch_content;
+    mch_content += "CAT Widescreen Hor+\n";
+    mch_content += "CODE " + std::string(enable_16_9 ? "1" : "0") + " Widescreen Hor+ 16:9 (Proyeccion 3D)\n";
+    mch_content += "920793DC 00001555\n";
+    mch_content += "120793DC 00001C72\n";
+    mch_content += "D2000000 00000000\n";
+    mch_content += "CODE " + std::string(enable_16_10 ? "1" : "0") + " Widescreen Hor+ 16:10 (Steam Deck)\n";
+    mch_content += "920793DC 00001555\n";
+    mch_content += "120793DC 0000199A\n";
+    mch_content += "D2000000 00000000\n";
+
+    // 1. Escribir junto a la ROM con el nombre correspondiente
+    std::string rom_mch = rom_path.empty() ? "Golden Sun - Dark Dawn.nds" : rom_path;
+    size_t dot_pos = rom_mch.find_last_of('.');
+    if (dot_pos != std::string::npos) {
+        rom_mch = rom_mch.substr(0, dot_pos) + ".mch";
+    } else {
+        rom_mch += ".mch";
+    }
+
+    FILE* f1 = fopen(rom_mch.c_str(), "w");
+    if (f1) {
+        fputs(mch_content.c_str(), f1);
+        fclose(f1);
+    }
+
+    // 2. Escribir en la carpeta de melonDS y raiz como fallback
+    FILE* f2 = fopen("Golden Sun - Dark Dawn.mch", "w");
+    if (f2) {
+        fputs(mch_content.c_str(), f2);
+        fclose(f2);
+    }
+
+    FILE* f3 = fopen("tools\\engine\\Golden Sun - Dark Dawn.mch", "w");
+    if (f3) {
+        fputs(mch_content.c_str(), f3);
+        fclose(f3);
+    }
+}
+
+// Sincronizar ajustes del usuario con la configuracion del motor de Nintendo DS
 static void sync_melon_config(const NdsConfig& config, const std::string& rom_path) {
     char toml_path[MAX_PATH];
     GetFullPathNameA("tools\\engine\\melonDS.toml", sizeof(toml_path), toml_path, NULL);
-
-    FILE* f = fopen(toml_path, "w");
-    if (!f) return;
 
     // Mapeo de Layout de pantalla para Nintendo DS
     int melon_layout = 1;
@@ -34,88 +81,150 @@ static void sync_melon_config(const NdsConfig& config, const std::string& rom_pa
     if (melon_volume < 0) melon_volume = 0;
     if (melon_volume > 256) melon_volume = 256;
 
-    // Aspect ratio top screen (0: 4:3, 1: 16:9, 2: 16:10)
-    int aspect_top = 0;
-    if (config.aspect_ratio_mode == NDS_ASPECT_16_9) aspect_top = 1;
-    else if (config.aspect_ratio_mode == NDS_ASPECT_16_10) aspect_top = 2;
+    // Aspect ratio en melonDS: 0 = 4:3 (native), 1 = 5:3 (3DS / Steam Deck 16:10), 2 = 16:9, 3 = 21:9
+    int aspect_val = 0;
+    if (config.aspect_ratio_mode == NDS_ASPECT_16_9) aspect_val = 2;
+    else if (config.aspect_ratio_mode == NDS_ASPECT_16_10) aspect_val = 1;
 
-    fprintf(f, "# Configuracion optimizada para Golden Sun 3: Oscuro Amanecer\n");
-    fprintf(f, "# Mejoras activas: Framebuffer Capture HD, Aspect Ratio 16:9/16:10, AF y Texturas\n");
-    fprintf(f, "UITheme = \"\"\n");
-    fprintf(f, "AudioSync = true\n");
-    fprintf(f, "PauseLostFocus = false\n");
-    fprintf(f, "TargetFPS = 60.0\n");
-    fprintf(f, "LimitFPS = true\n\n");
+    int aspect_top = aspect_val;
+    int aspect_bot = aspect_val;
+    if (config.widescreen_target_screen == 1) { // Solo pantalla 3D inferior
+        aspect_top = 0;
+        aspect_bot = aspect_val;
+    } else if (config.widescreen_target_screen == 2) { // Solo pantalla superior
+        aspect_top = aspect_val;
+        aspect_bot = 0;
+    }
 
-    fprintf(f, "[Audio]\n");
-    fprintf(f, "Interpolation = %d\n", config.spu_interpolation);
-    fprintf(f, "BitDepth = 0\n\n");
+    // Leer lineas existentes de melonDS.toml si el archivo ya existe
+    std::vector<std::string> lines;
+    std::ifstream infile(toml_path);
+    if (infile.is_open()) {
+        std::string line;
+        while (std::getline(infile, line)) {
+            lines.push_back(line);
+        }
+        infile.close();
+    }
 
-    fprintf(f, "[3D]\n");
-    fprintf(f, "Renderer = 1\n\n"); // 1 = Motor OpenGL acelerado por hardware
+    // Diccionario de claves a sincronizar
+    std::map<std::string, std::map<std::string, std::string>> updates;
+    updates["3D"]["Renderer"] = "1"; // OpenGL acelerado por hardware
+    updates["3D.GL"]["ScaleFactor"] = std::to_string(melon_scale); // 1x, 2x, 3x, 4x, 6x, 8x (4K)
+    updates["3D.GL"]["BetterPolygons"] = config.subpixel_rasterizer ? "true" : "false";
+    updates["3D.GL"]["AnisotropicFiltering"] = std::to_string(config.anisotropic_filter);
+    updates["3D.GL"]["CustomTextures"] = config.custom_textures_enabled ? "true" : "false";
 
-    fprintf(f, "[3D.GL]\n");
-    fprintf(f, "Scale = %d\n", melon_scale);
-    fprintf(f, "BetterPolygons = %s\n", config.subpixel_rasterizer ? "true" : "false");
-    fprintf(f, "AnisotropicFiltering = %d\n", config.anisotropic_filter);
-    fprintf(f, "CustomTextures = %s\n\n", config.custom_textures_enabled ? "true" : "false");
+    updates["Screen"]["VSync"] = config.vsync ? "true" : "false";
+    updates["Screen"]["VSyncInterval"] = "1";
+    updates["Screen"]["UseGL"] = "true";
 
-    fprintf(f, "[Screen]\n");
-    fprintf(f, "UseGL = true\n\n");
+    updates["Instance0.Window0"]["ScreenAspectTop"] = std::to_string(aspect_top);
+    updates["Instance0.Window0"]["ScreenAspectBot"] = std::to_string(aspect_bot);
+    updates["Instance0.Window0"]["ScreenLayout"] = std::to_string(melon_layout);
+    updates["Instance0.Window0"]["ScreenGap"] = std::to_string(config.screen_gap);
+    updates["Instance0.Window0"]["ScreenSwap"] = config.swap_screens ? "true" : "false";
+    updates["Instance0.Window0"]["IntegerScaling"] = config.integer_scaling ? "true" : "false";
+    updates["Instance0.Window0"]["ScreenFilter"] = (config.texture_filter != 0) ? "true" : "false";
 
-    fprintf(f, "[Instance0]\n");
-    fprintf(f, "SaveFilePath = \"../../saves\"\n");
-    fprintf(f, "EnableCheats = true\n\n");
+    updates["Instance0"]["EnableCheats"] = "true";
+    updates["Instance0"]["SaveFilePath"] = "\"../../saves\"";
+    updates["Instance0"]["CheatFilePath"] = "\"\"";
 
-    fprintf(f, "[Instance0.Window0]\n");
-    fprintf(f, "ScreenFilter = %s\n", (config.texture_filter != 0) ? "true" : "false");
-    fprintf(f, "ScreenAspectTop = %d\n", aspect_top);
-    fprintf(f, "ScreenAspectBot = 0\n");
-    fprintf(f, "IntegerScaling = %s\n", config.integer_scaling ? "true" : "false");
-    fprintf(f, "ScreenSizing = 0\n");
-    fprintf(f, "ScreenSwap = %s\n", config.swap_screens ? "true" : "false");
-    fprintf(f, "ScreenGap = %d\n", config.screen_gap);
-    fprintf(f, "ScreenRotation = 0\n");
-    fprintf(f, "ScreenLayout = %d\n", melon_layout);
-    fprintf(f, "ShowOSD = false\n\n");
+    updates["Instance0.Audio"]["Volume"] = std::to_string(melon_volume);
+    updates["Instance0.Firmware"]["Language"] = std::to_string(config.selected_language);
 
-    fprintf(f, "[Instance0.Audio]\n");
-    fprintf(f, "Volume = %d\n\n", melon_volume);
+    if (lines.empty()) {
+        // Generar plantilla completa si no existia
+        std::ofstream outfile(toml_path);
+        outfile << "# melonDS configuration for Golden Sun 3 Recompilation\n";
+        outfile << "UITheme = \"\"\n";
+        outfile << "AudioSync = true\n";
+        outfile << "PauseLostFocus = false\n";
+        outfile << "TargetFPS = 60.0\n";
+        outfile << "LimitFPS = true\n\n";
 
-    fprintf(f, "[Instance0.Firmware]\n");
-    fprintf(f, "Language = %d\n", config.selected_language); // 5 = Español nativo
-    fprintf(f, "Username = \"GoldenSun\"\n\n");
+        for (auto& sec : updates) {
+            outfile << "[" << sec.first << "]\n";
+            for (auto& kv : sec.second) {
+                outfile << kv.first << " = " << kv.second << "\n";
+            }
+            outfile << "\n";
+        }
+        outfile.close();
+    } else {
+        std::vector<std::string> new_lines;
+        std::string current_sec = "";
 
-    fprintf(f, "[Emu]\n");
-    fprintf(f, "DirectBoot = true\n");
-    fprintf(f, "ExternalBIOSEnable = false\n");
-    fprintf(f, "ConsoleType = 0\n\n");
+        auto flush_remaining = [&](const std::string& sec) {
+            auto it = updates.find(sec);
+            if (it != updates.end()) {
+                for (auto& kv : it->second) {
+                    new_lines.push_back(kv.first + " = " + kv.second);
+                }
+                updates.erase(it);
+            }
+        };
 
-    fprintf(f, "[JIT]\n");
-    fprintf(f, "Enable = true\n");
-    fprintf(f, "FastMemory = true\n\n");
+        for (const auto& line : lines) {
+            std::string trimmed = line;
+            while (!trimmed.empty() && (trimmed.back() == '\r' || trimmed.back() == ' ' || trimmed.back() == '\t')) trimmed.pop_back();
+            size_t start = 0;
+            while (start < trimmed.size() && (trimmed[start] == ' ' || trimmed[start] == '\t')) start++;
+            trimmed = trimmed.substr(start);
 
-    // Mapeo de controles ergonómico
-    fprintf(f, "[Instance0.Keyboard]\n");
-    fprintf(f, "Up = 16777235\n");
-    fprintf(f, "Down = 16777237\n");
-    fprintf(f, "Left = 16777234\n");
-    fprintf(f, "Right = 16777236\n");
-    fprintf(f, "A = 88\n"); // Tecla X = Botón A
-    fprintf(f, "B = 90\n"); // Tecla Z = Botón B
-    fprintf(f, "X = 83\n"); // Tecla S = Botón X
-    fprintf(f, "Y = 65\n"); // Tecla A = Botón Y
-    fprintf(f, "L = 81\n"); // Tecla Q = Gatillo L
-    fprintf(f, "R = 87\n"); // Tecla W = Gatillo R
-    fprintf(f, "Start = 16777220\n"); // Enter = Start
-    fprintf(f, "Select = 32\n");       // Espacio = Select
-    fprintf(f, "HK_SwapScreens = 16777217\n"); // Tab = Intercambiar pantallas
-    fprintf(f, "HK_FullscreenToggle = 16777274\n"); // F11 = Pantalla completa
+            if (!trimmed.empty() && trimmed.front() == '[' && trimmed.back() == ']') {
+                flush_remaining(current_sec);
+                current_sec = trimmed.substr(1, trimmed.size() - 2);
+                new_lines.push_back(line);
+                continue;
+            }
 
-    fclose(f);
+            // Eliminar clave antigua/duplicada Scale = X en 3D.GL
+            if (current_sec == "3D.GL" && (trimmed.rfind("Scale = ", 0) == 0 || trimmed.rfind("Scale=", 0) == 0)) {
+                continue;
+            }
+
+            size_t eq_pos = trimmed.find('=');
+            if (eq_pos != std::string::npos) {
+                std::string key = trimmed.substr(0, eq_pos);
+                while (!key.empty() && (key.back() == ' ' || key.back() == '\t')) key.pop_back();
+
+                auto sec_it = updates.find(current_sec);
+                if (sec_it != updates.end()) {
+                    auto key_it = sec_it->second.find(key);
+                    if (key_it != sec_it->second.end()) {
+                        new_lines.push_back(key + " = " + key_it->second);
+                        sec_it->second.erase(key_it);
+                        continue;
+                    }
+                }
+            }
+
+            new_lines.push_back(line);
+        }
+
+        flush_remaining(current_sec);
+
+        // Secciones nuevas que no existian en el archivo original
+        for (auto& sec : updates) {
+            if (!sec.second.empty()) {
+                new_lines.push_back("\n[" + sec.first + "]");
+                for (auto& kv : sec.second) {
+                    new_lines.push_back(kv.first + " = " + kv.second);
+                }
+            }
+        }
+
+        std::ofstream outfile(toml_path);
+        for (const auto& nl : new_lines) {
+            outfile << nl << "\n";
+        }
+        outfile.close();
+    }
 }
 
-// Búsqueda y renombrado transparente de la ventana del juego
+// Busqueda y renombrado transparente de la ventana del juego
 typedef struct {
     DWORD process_id;
     HWND game_hwnd;
@@ -152,10 +261,13 @@ static DWORD WINAPI WindowBrandingThread(LPVOID lpParam) {
 }
 
 bool run_nds_game(NdsConfig& config, const NdsRomInfo& rom_info) {
-    // 1. Sincronizar configuración con fixes de pantalla ancha y framebuffer
+    // 1. Sincronizar configuracion grafica (ScaleFactor, VSync, Aspect Ratio 16:9/16:10, AF)
     sync_melon_config(config, rom_info.file_path);
 
-    // 2. Resolver rutas absolutas
+    // 2. Inyectar codigos Action Replay Hor+ Widescreen en formato nativo melonDS (.mch)
+    sync_melon_cheats(config, rom_info.file_path);
+
+    // 3. Resolver rutas absolutas
     char engine_exe[MAX_PATH];
     GetFullPathNameA("tools\\engine\\melonDS.exe", sizeof(engine_exe), engine_exe, NULL);
 
@@ -166,7 +278,7 @@ bool run_nds_game(NdsConfig& config, const NdsRomInfo& rom_info) {
     const char* rom_p = config.rom_path.empty() ? "Golden Sun - Dark Dawn.nds" : config.rom_path.c_str();
     GetFullPathNameA(rom_p, sizeof(full_rom), full_rom, NULL);
 
-    // 3. Crear comando de ejecución
+    // 4. Crear comando de ejecucion
     char cmd_line[2048];
     if (config.fullscreen) {
         snprintf(cmd_line, sizeof(cmd_line), "\"%s\" -f \"%s\"", engine_exe, full_rom);
@@ -200,11 +312,11 @@ bool run_nds_game(NdsConfig& config, const NdsRomInfo& rom_info) {
         return true;
     }
 
-    // 4. Iniciar hilo de personalización de ventana
+    // 5. Iniciar hilo de personalizacion de ventana
     HANDLE hThread = CreateThread(NULL, 0, WindowBrandingThread, (LPVOID)(uintptr_t)pi.dwProcessId, 0, NULL);
     if (hThread) CloseHandle(hThread);
 
-    // 5. Esperar a que el usuario termine de jugar
+    // 6. Esperar a que el usuario termine de jugar
     WaitForSingleObject(pi.hProcess, INFINITE);
 
     CloseHandle(pi.hProcess);
