@@ -1,0 +1,47 @@
+# =============================================================================
+# Nintendo DS Recompilation Settings - Golden Sun: Dark Dawn
+# =============================================================================
+
+[display]
+fullscreen = 1
+window_scale = 3
+vsync = 1
+refresh_rate = 0
+integer_scaling = 0
+
+[dual_screen]
+screen_layout = 1
+screen_gap = 16
+swap_screens = 0
+active_single_screen = 0
+aspect_ratio_mode = 1
+
+[goldensun_enhancements]
+fix_hd_framebuffer = 1
+custom_textures_enabled = 1
+
+[graphics_3d_2d]
+internal_resolution_scale = 4
+texture_filter = 0
+antialiasing_msaa = 4
+anisotropic_filter = 16
+perspective_correction = 1
+subpixel_rasterizer = 1
+widescreen_3d_fov = 1
+color_mode = 2
+
+[touch_stylus]
+stylus_mode = 0
+stylus_cursor_style = 0
+stylus_quick_tap = 1
+stylus_sensitivity = 100
+
+[audio_spu]
+volume_master = 95
+spu_interpolation = 3
+spu_sample_rate = 2
+stereo_expansion = 1
+
+[game]
+rom_path = "Golden Sun - Dark Dawn.nds"
+selected_language = 5

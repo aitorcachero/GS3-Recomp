@@ -1,0 +1,29 @@
+# =============================================================================
+# Nintendo DS Recompilation - .gitignore
+# =============================================================================
+
+# Build directories and intermediates
+build/
+build-*/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.recipe
+*.log
+*.tmp
+*.suo
+*.user
+*.vcxproj*
+
+# Copyrighted retail ROMs and backups
+*.nds
+*.srl
+*.sav
+saves/*.sav
+!saves/.gitkeep
+
+# Executable outputs that get packaged into releases
+# (source code and assets are tracked)
+GoldenSun3_Recomp.exe
