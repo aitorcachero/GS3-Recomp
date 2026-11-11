@@ -42,8 +42,10 @@ Para solucionar esto de raíz y darle a esta joya el trato que merece (al estilo
 | Gatillo R                | W                     | RB / R1                          |
 | Start                    | Enter                 | Start / Options                  |
 | Select                   | Espacio               | Back / Select / Share            |
-| Intercambiar Pantallas   | Tab                   | R3 (Click Stick Derecho)         |
+| Modo Turbo (Aceleración) | Tab (Tabulador)       | L3 (Click Stick Izquierdo)       |
+| Intercambiar Pantallas   | Retroceso (Backspace) | R3 (Click Stick Derecho)         |
 | Pantalla Completa        | F11                   | Alt + Enter                      |
+| Personalización Teclas   | Pestaña CONTROLES     | Configurable en el lanzador      |
 | Stylus / Pantalla Táctil | Ratón (Clic Izquierdo)| Stick Derecho                    |
 | Salir                    | Esc                   | Tecla Escape                     |
 +--------------------------+-----------------------+----------------------------------+

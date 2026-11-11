@@ -15,6 +15,7 @@ screen_gap = 24
 swap_screens = 0
 active_single_screen = 0
 aspect_ratio_mode = 1
+widescreen_target_screen = 0
 
 [goldensun_enhancements]
 fix_hd_framebuffer = 1
@@ -45,3 +46,23 @@ stereo_expansion = 1
 [game]
 rom_path = "Golden Sun - Dark Dawn.nds"
 selected_language = 5
+
+[keyboard_controls]
+key_up = 16777235
+key_down = 16777237
+key_left = 16777234
+key_right = 16777236
+key_a = 88
+key_b = 90
+key_x = 83
+key_y = 65
+key_l = 81
+key_r = 87
+key_start = 16777220
+key_select = 32
+
+[hotkeys]
+hk_turbo = 16777217
+hk_swap_screens = 16777219
+hk_fullscreen = 16777274
+hk_pause = -1

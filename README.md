@@ -1,7 +1,7 @@
 # Golden Sun 3: Oscuro Amanecer (Dark Dawn) - PC Native Recompilation Suite
 
 [![Platform: Windows x64](https://img.shields.io/badge/Platform-Windows%20x64-blue.svg)](https://github.com/aitorcachero/GS3-Recomp)
-[![Status: Released v1.0.1](https://img.shields.io/badge/Release-v1.0.1-brightgreen.svg)](https://github.com/aitorcachero/GS3-Recomp/releases)
+[![Status: Released v1.0.2](https://img.shields.io/badge/Release-v1.0.2-brightgreen.svg)](https://github.com/aitorcachero/GS3-Recomp/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](LICENSE)
 [![Game: Nintendo DS](https://img.shields.io/badge/ROM-Golden%20Sun%203%20(BO5P)-gold.svg)](https://github.com/aitorcachero/GS3-Recomp)
 
@@ -58,8 +58,10 @@ Golden Sun: Dark Dawn es históricamente uno de los títulos más difíciles de 
 | **Gatillo R** | `W` | `RB` / `R1` |
 | **Start** | `Enter` | `Start` / `Options` |
 | **Select** | `Espacio` | `Back` / `Select` / `Share` |
-| **Intercambiar Pantallas** | `Tab` | `R3` (Pulsar Stick Derecho) |
+| **Modo Turbo (Fast-Forward)** | `Tab` (Tabulador) | `L3` (Click Stick Izquierdo) |
+| **Intercambiar Pantallas** | `Retroceso` (Backspace) | `R3` (Click Stick Derecho) |
 | **Pantalla Completa** | `F11` | `Alt + Enter` |
+| **Personalización de Teclas** | Pestaña **CONTROLES & HOTKEYS** del lanzador | - |
 | **Stylus (Pantalla Táctil)** | Botón Izquierdo del Ratón | Stick Derecho |
 | **Salir del Juego** | `Esc` | `Guide` / `Home` |
 

@@ -1,134 +1,80 @@
 RecentROM = [
     "G:\\Proyectos\\NintendoDS-Recomp\\Golden Sun - Dark Dawn.nds",
 ]
-SlowmoFPS = 30.0
-FastForwardFPS = 1000.0
-AudioSync = true
 # Configuracion optimizada para Golden Sun 3: Oscuro Amanecer
 # Mejoras activas: Framebuffer Capture HD, Aspect Ratio 16:9/16:10, AF y Texturas
 UITheme = ""
-TargetFPS = 60.0
+SlowmoFPS = 30.0
 PauseLostFocus = false
+AudioSync = true
+TargetFPS = 60.0
 LimitFPS = true
+FastForwardFPS = 1000.0
 
-[DLDI]
-Enable = false
+[DSi]
+NANDPath = ""
 
-[Mouse]
-Hide = false
-HideSeconds = 5
+[DSi.Camera0]
+XFlip = false
+InputType = 0
+ImagePath = ""
+DeviceName = ""
 
-[Mic]
-WavPath = ""
-Device = ""
-InputType = 1
+[DSi.Camera1]
+XFlip = false
+InputType = 0
+ImagePath = ""
+DeviceName = ""
 
-[Savestate]
-RelocSRAM = false
-
-[LAN]
-DirectMode = false
-
-[3D]
-Renderer = 1
-
-[3D.GL]
-ScaleFactor = 6
-CustomTextures = true
-AnisotropicFiltering = 16
-BetterPolygons = true
-
-[MP]
-AudioMode = 1
-RecvTimeout = 25
-
-[Emu]
-ConsoleType = 0
-ExternalBIOSEnable = false
-DirectBoot = true
-
-[Audio]
-BitDepth = 0
-Interpolation = 3
-
-[JIT]
-BranchOptimisations = true
-LiteralOptimisations = true
-MaxBlockSize = 32
-FastMemory = true
-Enable = true
-
-[Screen]
-VSync = true
-UseGL = true
-
-VSyncInterval = 1
 [Instance0]
 SaveFilePath = "../../saves"
 EnableCheats = true
-SavestatePath = ""
 JoystickID = 0
+SavestatePath = ""
 CheatFilePath = ""
 
-[Instance0.RTC]
-Offset = 0
-
-[Instance0.DS]
-[Instance0.DS.Battery]
-LevelOkay = true
-
-[Instance0.Keyboard]
-HK_GuitarGripBlue = -1
-HK_GuitarGripYellow = -1
-HK_GuitarGripGreen = -1
-HK_SlowMoToggle = -1
-Select = 32
-HK_SolarSensorIncrease = -1
-Y = 65
-HK_FrameStep = -1
-X = 83
-B = 90
-Down = 16777237
-HK_GuitarGripRed = -1
-L = 81
-R = 87
-HK_SwapScreens = 16777217
-Left = 16777234
-A = 88
-Start = 16777220
-HK_Pause = -1
-Right = 16777236
-HK_FullscreenToggle = 16777274
-HK_SlowMo = -1
-Up = 16777235
-HK_Lid = -1
-HK_Mic = -1
-HK_FastForward = -1
-HK_FrameLimitToggle = -1
-HK_SwapScreenEmphasis = -1
-HK_Reset = -1
-HK_PowerButton = -1
-HK_VolumeDown = -1
-HK_SolarSensorDecrease = -1
-HK_VolumeUp = -1
-HK_FastForwardToggle = -1
-
-[Instance0.Window2]
+[Instance0.Gdb]
 Enabled = false
 
+[Instance0.Gdb.ARM7]
+Port = 3334
+BreakOnStartup = false
+
+[Instance0.Gdb.ARM9]
+Port = 3333
+BreakOnStartup = false
+
+[Instance0.Window1]
+Enabled = false
+
+[Instance0.Firmware]
+Language = 5
+Username = "GoldenSun"
+FavouriteColour = 0
+BirthdayMonth = 1
+BirthdayDay = 1
+Message = ""
+MAC = ""
+
 [Instance0.Joystick]
-HK_GuitarGripBlue = -1
-HK_GuitarGripYellow = -1
-HK_GuitarGripGreen = -1
-HK_SlowMoToggle = -1
-HK_Lid = -1
+HK_FastForwardToggle = 16777217
+HK_VolumeUp = -1
+HK_SolarSensorDecrease = -1
+HK_VolumeDown = -1
+HK_SolarSensorIncrease = -1
+R = -1
+L = -1
+HK_GuitarGripRed = -1
+A = -1
 Y = -1
 HK_FrameStep = -1
-HK_SolarSensorIncrease = -1
-HK_GuitarGripRed = -1
-L = -1
-R = -1
+HK_Lid = -1
+HK_SlowMoToggle = -1
+HK_GuitarGripYellow = -1
+HK_FrameLimitToggle = -1
 Up = -1
+HK_GuitarGripGreen = -1
+HK_GuitarGripBlue = -1
 HK_FullscreenToggle = -1
 HK_SlowMo = -1
 HK_Pause = -1
@@ -138,76 +84,130 @@ Select = -1
 X = -1
 B = -1
 Down = -1
-A = -1
 HK_Mic = -1
-HK_FastForward = -1
-HK_FrameLimitToggle = -1
+HK_FastForward = 16777217
 Left = -1
 HK_SwapScreens = -1
 HK_SwapScreenEmphasis = -1
-HK_Reset = -1
 HK_PowerButton = -1
-HK_VolumeDown = -1
-HK_SolarSensorDecrease = -1
+HK_Reset = -1
+
+[Instance0.Keyboard]
+HK_FastForwardToggle = 16777217
 HK_VolumeUp = -1
-HK_FastForwardToggle = -1
+HK_SolarSensorDecrease = -1
+HK_VolumeDown = -1
+HK_SolarSensorIncrease = -1
+B = 90
+Down = 16777237
+X = 83
+HK_FrameStep = -1
+Y = 65
+A = 88
+Select = 32
+HK_SlowMoToggle = -1
+HK_GuitarGripYellow = -1
+HK_FrameLimitToggle = -1
+HK_GuitarGripGreen = -1
+HK_GuitarGripBlue = -1
+L = 81
+HK_GuitarGripRed = -1
+R = 87
+HK_SwapScreens = 16777219
+Left = 16777234
+HK_Pause = -1
+Start = 16777220
+Right = 16777236
+HK_FullscreenToggle = 16777274
+HK_SlowMo = -1
+Up = 16777235
+HK_Lid = -1
+HK_Mic = -1
+HK_FastForward = 16777217
+HK_SwapScreenEmphasis = -1
+HK_PowerButton = -1
+HK_Reset = -1
+
+[Instance0.Window2]
+Enabled = false
+
+[Instance0.RTC]
+Offset = 0
+
+[Instance0.DS]
+[Instance0.DS.Battery]
+LevelOkay = true
 
 [Instance0.Window0]
-Enabled = true
-ShowOSD = false
-Geometry = "AdnQywADAAAAAAAIAAAAAAAACfcAAAWXAAADwAAAAcgAAASHAAACKwAAAAAABAAACgAAAAAAAAAAAAAACf8AAAWf"
-ScreenLayout = 1
-ScreenGap = 24
-ScreenSwap = false
-ScreenSizing = 0
-IntegerScaling = false
-ScreenRotation = 0
-ScreenAspectBot = 2
-ScreenAspectTop = 2
 ScreenFilter = false
-
-[Instance0.Audio]
-DSiVolumeSync = false
-Volume = 243
+ScreenAspectTop = 2
+ScreenAspectBot = 2
+ScreenRotation = 0
+IntegerScaling = false
+ScreenSizing = 0
+ScreenSwap = false
+ScreenGap = 24
+ScreenLayout = 1
+Geometry = "AdnQywADAAAAAAAIAAAAAAAACfcAAAWXAAADwAAAAcgAAASHAAACKwAAAAAABAAACgAAAAAAAAAAAAAACf8AAAWf"
+ShowOSD = false
+Enabled = true
 
 [Instance0.Window3]
 Enabled = false
 
-[Instance0.Firmware]
-MAC = ""
-Message = ""
-BirthdayDay = 1
-BirthdayMonth = 1
-FavouriteColour = 0
-Username = "GoldenSun"
-Language = 5
+[Instance0.Audio]
+Volume = 243
+DSiVolumeSync = false
 
-[Instance0.Window1]
-Enabled = false
+[Audio]
+Interpolation = 3
+BitDepth = 0
 
-[Instance0.Gdb]
-Enabled = false
+[MP]
+RecvTimeout = 25
+AudioMode = 1
 
-[Instance0.Gdb.ARM9]
-BreakOnStartup = false
-Port = 3333
+[3D]
+Renderer = 1
 
-[Instance0.Gdb.ARM7]
-BreakOnStartup = false
-Port = 3334
+[3D.GL]
+BetterPolygons = true
+AnisotropicFiltering = 16
+CustomTextures = true
+ScaleFactor = 6
 
-[DSi]
-NANDPath = ""
+[Mouse]
+HideSeconds = 5
+Hide = false
 
-[DSi.Camera1]
-DeviceName = ""
-ImagePath = ""
-InputType = 0
-XFlip = false
+[Mic]
+InputType = 1
+Device = ""
+WavPath = ""
 
-[DSi.Camera0]
-DeviceName = ""
-ImagePath = ""
-InputType = 0
-XFlip = false
+[Emu]
+DirectBoot = true
+ExternalBIOSEnable = false
+ConsoleType = 0
+
+[LAN]
+DirectMode = false
+
+[Screen]
+VSyncInterval = 1
+UseGL = true
+VSync = true
+
+[JIT]
+Enable = true
+FastMemory = true
+MaxBlockSize = 32
+LiteralOptimisations = true
+BranchOptimisations = true
+
+[DLDI]
+Enable = false
+
+[Savestate]
+RelocSRAM = false
 

@@ -122,6 +122,84 @@ static GLuint load_texture_from_rgba(const uint8_t *rgba_data, int w, int h) {
     return tex_id;
 }
 
+static std::string get_qt_key_name(int qt_key) {
+    switch (qt_key) {
+        case 16777216: return "Escape";
+        case 16777217: return "Tabulador (Tab)";
+        case 16777218: return "Backtab";
+        case 16777219: return "Retroceso (Backspace)";
+        case 16777220: return "Enter / Intro";
+        case 16777222: return "Insert";
+        case 16777223: return "Supr (Delete)";
+        case 16777224: return "Pausa (Pause)";
+        case 16777232: return "Inicio (Home)";
+        case 16777233: return "Fin (End)";
+        case 16777234: return "Flecha Izquierda";
+        case 16777235: return "Flecha Arriba";
+        case 16777236: return "Flecha Derecha";
+        case 16777237: return "Flecha Abajo";
+        case 16777238: return "Re Pag";
+        case 16777239: return "Av Pag";
+        case 16777248: return "Shift";
+        case 16777249: return "Control";
+        case 16777251: return "Alt";
+        case 16777274: return "F11";
+        case 32:       return "Espacio (Space)";
+        case -1:       return "Desactivado";
+        default: break;
+    }
+    if (qt_key >= 65 && qt_key <= 90) {
+        std::string s = "Tecla ";
+        s += (char)qt_key;
+        return s;
+    }
+    if (qt_key >= 48 && qt_key <= 57) {
+        std::string s = "Numero ";
+        s += (char)qt_key;
+        return s;
+    }
+    if (qt_key >= 16777264 && qt_key <= 16777275) {
+        return "F" + std::to_string(qt_key - 16777264 + 1);
+    }
+    return "Tecla (" + std::to_string(qt_key) + ")";
+}
+
+static int sdl_to_qt_key(SDL_Keycode sym) {
+    if (sym >= SDLK_a && sym <= SDLK_z) return 'A' + (int)(sym - SDLK_a);
+    if (sym >= SDLK_0 && sym <= SDLK_9) return '0' + (int)(sym - SDLK_0);
+    switch (sym) {
+        case SDLK_RETURN:
+        case SDLK_RETURN2:
+        case SDLK_KP_ENTER: return 16777220;
+        case SDLK_BACKSPACE: return 16777219;
+        case SDLK_TAB: return 16777217;
+        case SDLK_SPACE: return 32;
+        case SDLK_ESCAPE: return 16777216;
+        case SDLK_UP: return 16777235;
+        case SDLK_DOWN: return 16777237;
+        case SDLK_LEFT: return 16777234;
+        case SDLK_RIGHT: return 16777236;
+        case SDLK_LSHIFT:
+        case SDLK_RSHIFT: return 16777248;
+        case SDLK_LCTRL:
+        case SDLK_RCTRL: return 16777249;
+        case SDLK_LALT:
+        case SDLK_RALT: return 16777251;
+        case SDLK_DELETE: return 16777223;
+        case SDLK_INSERT: return 16777222;
+        case SDLK_PAGEUP: return 16777238;
+        case SDLK_PAGEDOWN: return 16777239;
+        case SDLK_HOME: return 16777232;
+        case SDLK_END: return 16777233;
+        case SDLK_PAUSE: return 16777224;
+        default: break;
+    }
+    if (sym >= SDLK_F1 && sym <= SDLK_F12) {
+        return 16777264 + (int)(sym - SDLK_F1);
+    }
+    return -1;
+}
+
 NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_info) {
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -285,6 +363,7 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
     colors[ImGuiCol_TextDisabled]         = ImVec4(0.550f, 0.630f, 0.720f, 1.00f);
 
     int active_tab = 0;
+    int rebinding_action = -1;
     bool running = true;
     NdsLauncherAction result_action = NDS_ACTION_NONE;
     float toast_timer = 0.0f;
@@ -316,6 +395,41 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
                 running = false;
                 result_action = NDS_ACTION_QUIT;
             } else if (event.type == SDL_KEYDOWN) {
+                if (rebinding_action >= 0) {
+                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                        rebinding_action = -1;
+                        toast_msg = "Reasignacion cancelada";
+                        toast_timer = 2.0f;
+                    } else {
+                        int qt_code = sdl_to_qt_key(event.key.keysym.sym);
+                        if (qt_code != -1) {
+                            switch (rebinding_action) {
+                                case 0: config.key_up = qt_code; break;
+                                case 1: config.key_down = qt_code; break;
+                                case 2: config.key_left = qt_code; break;
+                                case 3: config.key_right = qt_code; break;
+                                case 4: config.key_a = qt_code; break;
+                                case 5: config.key_b = qt_code; break;
+                                case 6: config.key_x = qt_code; break;
+                                case 7: config.key_y = qt_code; break;
+                                case 8: config.key_l = qt_code; break;
+                                case 9: config.key_r = qt_code; break;
+                                case 10: config.key_start = qt_code; break;
+                                case 11: config.key_select = qt_code; break;
+                                case 12: config.hk_turbo = qt_code; break;
+                                case 13: config.hk_swap_screens = qt_code; break;
+                                case 14: config.hk_fullscreen = qt_code; break;
+                                case 15: config.hk_pause = qt_code; break;
+                            }
+                            config.save_to_file("settings.toml");
+                            toast_msg = std::string("Tecla asignada: ") + get_qt_key_name(qt_code);
+                            toast_timer = 2.5f;
+                            rebinding_action = -1;
+                        }
+                    }
+                    continue;
+                }
+
                 if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
                     running = false;
                     result_action = NDS_ACTION_QUIT;
@@ -418,7 +532,7 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
 
             TabButton("DASHBOARD", 0, ImVec4(1.0f, 0.75f, 0.15f, 1.0f));
             TabButton("MEJORAS VISUALES", 1, ImVec4(0.2f, 0.75f, 1.0f, 1.0f));
-            TabButton("PANTALLA TACTIL", 2, ImVec4(0.3f, 0.9f, 0.5f, 1.0f));
+            TabButton("CONTROLES & HOTKEYS", 2, ImVec4(0.3f, 0.9f, 0.5f, 1.0f));
             TabButton("AUDIO & SPU", 3, ImVec4(0.85f, 0.45f, 1.0f, 1.0f));
             TabButton("PARTIDAS & SAVES", 4, ImVec4(1.0f, 0.45f, 0.35f, 1.0f));
 
@@ -752,13 +866,98 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
             }
 
             // ---------------------------------------------------------------------
-            // TAB 2: PANTALLA TÁCTIL & STYLUS
+            // TAB 2: CONTROLES & HOTKEYS
             // ---------------------------------------------------------------------
             else if (active_tab == 2) {
-                ImGui::BeginChild("TouchControlsCard", ImVec2(0, 0), true);
+                ImGui::BeginChild("ControlsAndHotkeysCard", ImVec2(0, 0), true);
                 {
+                    ImGui::Columns(2, "ControlsCols", false);
+                    ImGui::SetColumnWidth(0, (win_w - poster_display_w) * 0.49f);
+
+                    // =============================================================
+                    // COLUMNA 1: CONTROLES DE JUEGO (BOTONES NDS)
+                    // =============================================================
                     if (font_bold) ImGui::PushFont(font_bold);
-                    ImGui::TextColored(ImVec4(0.3f, 0.9f, 0.5f, 1.0f), "CONFIGURACION DEL STYLUS & DIGITALIZADOR TACTIL:");
+                    ImGui::TextColored(ImVec4(0.3f, 0.9f, 0.5f, 1.0f), "CONTROLES DE JUEGO (BOTONES NDS):");
+                    if (font_bold) ImGui::PopFont();
+                    ImGui::TextDisabled("Haz clic en cualquier tecla para reasignarla:");
+                    ImGui::Spacing();
+
+                    auto KeyBindRow = [&](const char* action_name, int& target_key, int action_id) {
+                        ImGui::AlignTextToFramePadding();
+                        ImGui::Text("%-28s", action_name);
+                        ImGui::SameLine(230.0f * scale);
+                        char btn_id[64];
+                        snprintf(btn_id, sizeof(btn_id), "##bind_%d", action_id);
+                        if (rebinding_action == action_id) {
+                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.65f, 0.0f, 1.0f));
+                            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.05f, 0.05f, 0.05f, 1.0f));
+                            if (ImGui::Button(("[ Presiona una tecla... ]" + std::string(btn_id)).c_str(), ImVec2(220.0f * scale, 30.0f * scale))) {
+                                rebinding_action = -1; // Clic para cancelar
+                            }
+                            ImGui::PopStyleColor(2);
+                        } else {
+                            std::string label = get_qt_key_name(target_key) + std::string(btn_id);
+                            if (ImGui::Button(label.c_str(), ImVec2(220.0f * scale, 30.0f * scale))) {
+                                rebinding_action = action_id;
+                            }
+                        }
+                    };
+
+                    KeyBindRow("Cruceta Arriba:", config.key_up, 0);
+                    KeyBindRow("Cruceta Abajo:", config.key_down, 1);
+                    KeyBindRow("Cruceta Izquierda:", config.key_left, 2);
+                    KeyBindRow("Cruceta Derecha:", config.key_right, 3);
+                    KeyBindRow("Boton A (Confirmar / Hablar):", config.key_a, 4);
+                    KeyBindRow("Boton B (Cancelar / Correr):", config.key_b, 5);
+                    KeyBindRow("Boton X (Menu / Djinn):", config.key_x, 6);
+                    KeyBindRow("Boton Y (Psinergia de Campo):", config.key_y, 7);
+                    KeyBindRow("Gatillo L:", config.key_l, 8);
+                    KeyBindRow("Gatillo R:", config.key_r, 9);
+                    KeyBindRow("Boton Start (Pausa):", config.key_start, 10);
+                    KeyBindRow("Boton Select (Menu/Opciones):", config.key_select, 11);
+
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::Spacing();
+
+                    if (ImGui::Button("Restablecer Controles y Hotkeys por Defecto", ImVec2(380.0f * scale, 36.0f * scale))) {
+                        config.reset_default_controls();
+                        config.save_to_file("settings.toml");
+                        toast_msg = "Controles restablecidos (Tab = Turbo, Retroceso = Cambiar Pantalla)";
+                        toast_timer = 3.5f;
+                    }
+
+                    // =============================================================
+                    // COLUMNA 2: ACCESOS RAPIDOS (HOTKEYS) & DIGITALIZADOR TACTIL
+                    // =============================================================
+                    ImGui::NextColumn();
+
+                    if (font_bold) ImGui::PushFont(font_bold);
+                    ImGui::TextColored(ImVec4(1.0f, 0.75f, 0.2f, 1.0f), "ACCESOS RAPIDOS (HOTKEYS):");
+                    if (font_bold) ImGui::PopFont();
+                    ImGui::TextDisabled("Atajos especiales activos durante la partida:");
+                    ImGui::Spacing();
+
+                    KeyBindRow("Modo Turbo (Fast-Forward):", config.hk_turbo, 12);
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Acelera el juego para levear rapido y omitir animaciones largas (Asignado a TAB por defecto).");
+                    }
+
+                    KeyBindRow("Cambiar Pantalla (Swap):", config.hk_swap_screens, 13);
+                    if (ImGui::IsItemHovered()) {
+                        ImGui::SetTooltip("Intercambia la pantalla superior e inferior (Asignado a RETROCESO por defecto).");
+                    }
+
+                    KeyBindRow("Pantalla Completa:", config.hk_fullscreen, 14);
+                    KeyBindRow("Pausa del Emulador:", config.hk_pause, 15);
+
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::Spacing();
+
+                    if (font_bold) ImGui::PushFont(font_bold);
+                    ImGui::TextColored(ImVec4(0.3f, 0.9f, 0.5f, 1.0f), "DIGITALIZADOR TACTIL & STYLUS:");
                     if (font_bold) ImGui::PopFont();
 
                     const char* stylus_modes[] = {
@@ -777,31 +976,8 @@ NdsLauncherAction run_nds_modern_launcher(NdsConfig& config, NdsRomInfo& rom_inf
                     ImGui::Combo("Estilo del Cursor del Lapiz", &config.stylus_cursor_style, cursor_styles, 4);
 
                     ImGui::SliderInt("Sensibilidad del Stylus", &config.stylus_sensitivity, 50, 200, "%d %%");
-                    ImGui::Checkbox("Toque Rapido al Centro de Pantalla (Acceso rapido para pasar dialogos)", (bool*)&config.stylus_quick_tap);
+                    ImGui::Checkbox("Toque Rapido al Centro de Pantalla (Pasar dialogos rapido)", (bool*)&config.stylus_quick_tap);
 
-                    ImGui::Spacing();
-                    ImGui::Separator();
-                    ImGui::Spacing();
-
-                    if (font_bold) ImGui::PushFont(font_bold);
-                    ImGui::TextColored(ImVec4(0.3f, 0.9f, 0.5f, 1.0f), "ASIGNACION DE MANDOS & TECLADO:");
-                    if (font_bold) ImGui::PopFont();
-
-                    ImGui::Columns(2, "PadBindsCols", false);
-                    ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "BOTONES NDS:");
-                    ImGui::Text("Cruceta / D-Pad: Flechas / Stick Izquierdo");
-                    ImGui::Text("Boton A (Confirmar): Tecla X / Mando Boton A");
-                    ImGui::Text("Boton B (Cancelar/Correr): Tecla Z / Mando Boton B");
-                    ImGui::Text("Boton X (Menu Principal): Tecla S / Mando Boton X");
-                    ImGui::Text("Boton Y (Psinergia): Tecla A / Mando Boton Y");
-
-                    ImGui::NextColumn();
-                    ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "GATILLOS & ACCESOS RAPIDOS:");
-                    ImGui::Text("Gatillo L: Tecla Q / Mando LB / L1");
-                    ImGui::Text("Gatillo R: Tecla W / Mando RB / R1");
-                    ImGui::Text("Start: Tecla Enter / Mando Start");
-                    ImGui::Text("Select: Tecla Espacio / Mando Select");
-                    ImGui::Text("Intercambiar Pantalla: Tecla Tab / Mando R3 (Click Stick)");
                     ImGui::Columns(1);
                 }
                 ImGui::EndChild();

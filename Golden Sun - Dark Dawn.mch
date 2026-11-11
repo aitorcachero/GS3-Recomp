@@ -1,5 +1,5 @@
-CAT Pantalla Ancha Widescreen Hor+
-CODE 1 Widescreen Hor+ 16:9
+CAT Widescreen Hor+
+CODE 1 Widescreen Hor+ 16:9 (Proyeccion 3D)
 920793DC 00001555
 120793DC 00001C72
 D2000000 00000000

@@ -87,6 +87,27 @@ struct NdsConfig {
     std::string rom_path = "Golden Sun - Dark Dawn.nds";
     int selected_language = 5; // 5: Spanish
 
+    // Keyboard & Pad Mappings (Qt key codes for melonDS)
+    int key_up = 16777235;        // Flecha Arriba
+    int key_down = 16777237;      // Flecha Abajo
+    int key_left = 16777234;      // Flecha Izquierda
+    int key_right = 16777236;     // Flecha Derecha
+    int key_a = 88;               // Tecla X
+    int key_b = 90;               // Tecla Z
+    int key_x = 83;               // Tecla S
+    int key_y = 65;               // Tecla A
+    int key_l = 81;               // Tecla Q
+    int key_r = 87;               // Tecla W
+    int key_start = 16777220;     // Enter
+    int key_select = 32;          // Espacio
+
+    // Hotkeys
+    int hk_turbo = 16777217;        // Tabulador (Turbo / Fast Forward)
+    int hk_swap_screens = 16777219; // Retroceso / Backspace (Cambiar Pantalla)
+    int hk_fullscreen = 16777274;   // F11 (Pantalla Completa)
+    int hk_pause = -1;              // Pausa
+
+    void reset_default_controls();
     void apply_preset(int preset_id);
     void load_from_file(const char* filepath = "settings.toml");
     void save_to_file(const char* filepath = "settings.toml") const;

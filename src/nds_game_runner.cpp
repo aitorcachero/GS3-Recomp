@@ -134,6 +134,26 @@ static void sync_melon_config(const NdsConfig& config, const std::string& rom_pa
     updates["Instance0.Audio"]["Volume"] = std::to_string(melon_volume);
     updates["Instance0.Firmware"]["Language"] = std::to_string(config.selected_language);
 
+    // Mapeo persistente de teclado y hotkeys
+    updates["Instance0.Keyboard"]["Up"] = std::to_string(config.key_up);
+    updates["Instance0.Keyboard"]["Down"] = std::to_string(config.key_down);
+    updates["Instance0.Keyboard"]["Left"] = std::to_string(config.key_left);
+    updates["Instance0.Keyboard"]["Right"] = std::to_string(config.key_right);
+    updates["Instance0.Keyboard"]["A"] = std::to_string(config.key_a);
+    updates["Instance0.Keyboard"]["B"] = std::to_string(config.key_b);
+    updates["Instance0.Keyboard"]["X"] = std::to_string(config.key_x);
+    updates["Instance0.Keyboard"]["Y"] = std::to_string(config.key_y);
+    updates["Instance0.Keyboard"]["L"] = std::to_string(config.key_l);
+    updates["Instance0.Keyboard"]["R"] = std::to_string(config.key_r);
+    updates["Instance0.Keyboard"]["Start"] = std::to_string(config.key_start);
+    updates["Instance0.Keyboard"]["Select"] = std::to_string(config.key_select);
+
+    updates["Instance0.Keyboard"]["HK_FastForward"] = std::to_string(config.hk_turbo);
+    updates["Instance0.Keyboard"]["HK_FastForwardToggle"] = std::to_string(config.hk_turbo);
+    updates["Instance0.Keyboard"]["HK_SwapScreens"] = std::to_string(config.hk_swap_screens);
+    updates["Instance0.Keyboard"]["HK_FullscreenToggle"] = std::to_string(config.hk_fullscreen);
+    updates["Instance0.Keyboard"]["HK_Pause"] = std::to_string(config.hk_pause);
+
     if (lines.empty()) {
         // Generar plantilla completa si no existia
         std::ofstream outfile(toml_path);

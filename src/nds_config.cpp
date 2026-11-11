@@ -88,6 +88,25 @@ void NdsConfig::apply_preset(int preset_id) {
     }
 }
 
+void NdsConfig::reset_default_controls() {
+    key_up = 16777235;        // Flecha Arriba
+    key_down = 16777237;      // Flecha Abajo
+    key_left = 16777234;      // Flecha Izquierda
+    key_right = 16777236;     // Flecha Derecha
+    key_a = 88;               // Tecla X
+    key_b = 90;               // Tecla Z
+    key_x = 83;               // Tecla S
+    key_y = 65;               // Tecla A
+    key_l = 81;               // Tecla Q
+    key_r = 87;               // Tecla W
+    key_start = 16777220;     // Enter
+    key_select = 32;          // Espacio
+    hk_turbo = 16777217;        // Tabulador (Turbo Fast Forward)
+    hk_swap_screens = 16777219; // Retroceso / Backspace (Cambiar pantalla)
+    hk_fullscreen = 16777274;   // F11
+    hk_pause = -1;              // Pausa
+}
+
 void NdsConfig::load_from_file(const char* filepath) {
     FILE* f = fopen(filepath, "r");
     if (!f) return;
@@ -136,6 +155,24 @@ void NdsConfig::load_from_file(const char* filepath) {
         else if (sscanf(line, "rom_path = \"%[^\"]\"", str) == 1 || sscanf(line, "rom_path = %s", str) == 1) {
             if (str[0] != '\0') rom_path = str;
         }
+
+        else if (sscanf(line, "key_up = %d", &v) == 1) key_up = v;
+        else if (sscanf(line, "key_down = %d", &v) == 1) key_down = v;
+        else if (sscanf(line, "key_left = %d", &v) == 1) key_left = v;
+        else if (sscanf(line, "key_right = %d", &v) == 1) key_right = v;
+        else if (sscanf(line, "key_a = %d", &v) == 1) key_a = v;
+        else if (sscanf(line, "key_b = %d", &v) == 1) key_b = v;
+        else if (sscanf(line, "key_x = %d", &v) == 1) key_x = v;
+        else if (sscanf(line, "key_y = %d", &v) == 1) key_y = v;
+        else if (sscanf(line, "key_l = %d", &v) == 1) key_l = v;
+        else if (sscanf(line, "key_r = %d", &v) == 1) key_r = v;
+        else if (sscanf(line, "key_start = %d", &v) == 1) key_start = v;
+        else if (sscanf(line, "key_select = %d", &v) == 1) key_select = v;
+
+        else if (sscanf(line, "hk_turbo = %d", &v) == 1) hk_turbo = v;
+        else if (sscanf(line, "hk_swap_screens = %d", &v) == 1) hk_swap_screens = v;
+        else if (sscanf(line, "hk_fullscreen = %d", &v) == 1) hk_fullscreen = v;
+        else if (sscanf(line, "hk_pause = %d", &v) == 1) hk_pause = v;
     }
     fclose(f);
 }
@@ -191,7 +228,27 @@ void NdsConfig::save_to_file(const char* filepath) const {
 
     fprintf(f, "[game]\n");
     fprintf(f, "rom_path = \"%s\"\n", rom_path.c_str());
-    fprintf(f, "selected_language = %d\n", selected_language);
+    fprintf(f, "selected_language = %d\n\n", selected_language);
+
+    fprintf(f, "[keyboard_controls]\n");
+    fprintf(f, "key_up = %d\n", key_up);
+    fprintf(f, "key_down = %d\n", key_down);
+    fprintf(f, "key_left = %d\n", key_left);
+    fprintf(f, "key_right = %d\n", key_right);
+    fprintf(f, "key_a = %d\n", key_a);
+    fprintf(f, "key_b = %d\n", key_b);
+    fprintf(f, "key_x = %d\n", key_x);
+    fprintf(f, "key_y = %d\n", key_y);
+    fprintf(f, "key_l = %d\n", key_l);
+    fprintf(f, "key_r = %d\n", key_r);
+    fprintf(f, "key_start = %d\n", key_start);
+    fprintf(f, "key_select = %d\n\n", key_select);
+
+    fprintf(f, "[hotkeys]\n");
+    fprintf(f, "hk_turbo = %d\n", hk_turbo);
+    fprintf(f, "hk_swap_screens = %d\n", hk_swap_screens);
+    fprintf(f, "hk_fullscreen = %d\n", hk_fullscreen);
+    fprintf(f, "hk_pause = %d\n", hk_pause);
 
     fclose(f);
 }
